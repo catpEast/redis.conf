@@ -240,8 +240,8 @@ tcp-keepalive 配置TCP探测频率，默认300秒探测一次
 socket-mark-id配置指定的ID来标记socket，以支持高级路由和过滤功能，无默认值
 ### TLS/SSL
 从 Redis 6开始，Redis 支持 SSL/TLS 作为一个可选特性，需要在编译时启用
-![image.png](https://cdn.nlark.com/yuque/0/2024/png/42775905/1711346012739-86ad7ac7-000d-4237-84fc-22eb8430d5b0.png#averageHue=%23fefefe&clientId=u710a29bc-5ce8-4&from=paste&height=399&id=uac61f386&originHeight=532&originWidth=731&originalType=binary&ratio=1&rotation=0&showTitle=false&size=49379&status=done&style=none&taskId=uff708f7f-1b80-4f89-a000-bb0af30ee26&title=&width=548)
 参考链接：[https://redis.io/docs/management/security/encryption/](https://redis.io/docs/management/security/encryption/)
+![image.png](https://cdn.nlark.com/yuque/0/2024/png/42775905/1711346012739-86ad7ac7-000d-4237-84fc-22eb8430d5b0.png#averageHue=%23fefefe&clientId=u710a29bc-5ce8-4&from=paste&height=399&id=uac61f386&originHeight=532&originWidth=731&originalType=binary&ratio=1&rotation=0&showTitle=false&size=49379&status=done&style=none&taskId=uff708f7f-1b80-4f89-a000-bb0af30ee26&title=&width=548)
 #### port
 #### tls-port
 ```bash
@@ -1533,6 +1533,7 @@ maxmemory-samples 配置 Redis 驱逐key时采样的key的数量，默认5
 ```
 maxmemory-eviction-tenacity 配置 Redis 在尝试驱逐key时的坚持程度，默认10
 > 该值越高，Redis 在达到 maxmemory 限制时会更积极地尝试驱逐键，以释放内存
+
 > 参考链接：[https://redis.io/docs/reference/eviction/](https://redis.io/docs/reference/eviction/)
 
 #### replica-ignore-maxmemory
@@ -1826,8 +1827,9 @@ appendonly 配置是否开启AOF功能，默认 no
 
 appendfilename "appendonly.aof"
 ```
-Redis 7 之前：appendfilename 配置 AOF 文件名，默认文件名为 appendonly.aof
-Redis 7 及之后：appendfilename 配置 AOF 文件前缀，默认文件前缀为 appendonly.aof
+
+- Redis 7 之前：appendfilename 配置 AOF 文件名，默认文件名为 appendonly.aof
+- Redis 7 及之后：appendfilename 配置 AOF 文件前缀，默认文件前缀为 appendonly.aof
 #### appenddirname
 ```bash
 # For convenience, Redis stores all persistent append-only files in a dedicated
@@ -2018,12 +2020,13 @@ shutdown-timeout  配置关闭 Redis 时，为滞后从节点追上最新复制�
 # shutdown-on-sigterm default
 ```
 shutdown-on-sigint 和 shutdown-on-sigterm 配置 Redis 收到 SIGINT 或 SIGTERM 信号时的关闭行为，默认 default
-> default：根据配置的保存点（save points）决定是否保存 RDB 快照，且等待从节点同步数据
-> save： 强制执行数据库保存操作，即使没有配置保存点
-> nosave：不进行保存操作，即使配置了保存点
-> now ： 不等待滞后的从节点同步数据
-> force ： 忽略阻止服务器退出的任何错误
-> 这些选项可以组合使用，但不能同时设置 save 和 nosave
+> - default：根据配置的保存点（save points）决定是否保存 RDB 快照，且等待从节点同步数据
+> - save： 强制执行数据库保存操作，即使没有配置保存点
+> - nosave：不进行保存操作，即使配置了保存点
+> - now ： 不等待滞后的从节点同步数据
+> - force ： 忽略阻止服务器退出的任何错误
+> 
+这些选项可以组合使用，但不能同时设置 save 和 nosave
 
 ### NON-DETERMINISTIC LONG BLOCKING COMMANDS
 #### lua-time-limit
