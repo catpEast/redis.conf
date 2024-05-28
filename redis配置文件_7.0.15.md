@@ -177,6 +177,7 @@ tcp-backlog 511
 ```
 tcp-backlog 配置Linux系统中Redis已完成TCP三次握手的连接的队列长度，默认511
 > 注意，该值如果大于somaxconn，Linux内核将默认地将其截断为somaxconn
+>
 > 查看somaxconn指令：cat /proc/sys/net/core/somaxconn
 
 #### unixsocket
@@ -224,8 +225,6 @@ tcp-keepalive 300
 tcp-keepalive 配置TCP探测频率，默认300秒探测一次
 
 > Redis 配置文件中的 tcp-keepalive 参数用于控制Linux系统中的 TCP keepalive 选项。这是一个网络层的设置，旨在检测和维护空闲的 TCP 连接，避免连接长期处于非活动状态而被网络设备（如路由器、防火墙）意外关闭。
-
-》 
 
 #### socket-mark-id
 
