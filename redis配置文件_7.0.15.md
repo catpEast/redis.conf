@@ -177,7 +177,6 @@ tcp-backlog 511
 ```
 tcp-backlog 配置Linux系统中Redis已完成TCP三次握手的连接的队列长度，默认511
 > 注意，该值如果大于somaxconn，Linux内核将默认地将其截断为somaxconn
->
 > 查看somaxconn指令：cat /proc/sys/net/core/somaxconn
 
 #### unixsocket
@@ -192,7 +191,7 @@ tcp-backlog 配置Linux系统中Redis已完成TCP三次握手的连接的队列�
 # unixsocket /run/redis.sock
 # unixsocketperm 700
 ```
-unixsocket unixsocketperm 配置Redis在本机进程间通信访问的unix socket文件位置和权限，无默认值
+unixsocket 和 unixsocketperm 配置Redis在本机进程间通信访问的unix socket文件位置和权限，无默认值
 > 当Redis和应用在同一台机器上时，可以使用进程间通信，性能会提高很多
 
 #### timeout
@@ -223,11 +222,9 @@ timeout 配置Redis关闭空闲超过一定时间的客户端连接，默认0
 tcp-keepalive 300
 ```
 tcp-keepalive 配置TCP探测频率，默认300秒探测一次
-
 > Redis 配置文件中的 tcp-keepalive 参数用于控制Linux系统中的 TCP keepalive 选项。这是一个网络层的设置，旨在检测和维护空闲的 TCP 连接，避免连接长期处于非活动状态而被网络设备（如路由器、防火墙）意外关闭。
 
 #### socket-mark-id
-
 ```bash
 # Apply OS-specific mechanism to mark the listening socket with the specified
 # ID, to support advanced routing and filtering capabilities.
@@ -498,9 +495,10 @@ logfile 配置日志文件名称，默认空字符串，即日志会打印到标
 # Specify the syslog facility. Must be USER or between LOCAL0-LOCAL7.
 # syslog-facility local0
 ```
-syslog-enabled 配置是否将 Redis 日志发送到 syslog，默认为no
-syslog-ident 配置 Redis 在 syslog 中的标识符，有助于区分来自不同服务的日志信息，默认为redis
-syslog-facility 指定 syslog 设施，syslog 设施用于将日志信息分类到不同的日志文件或日志流中。常见的设施包括 local0 到 local7，默认local0
+
+- syslog-enabled 配置是否将 Redis 日志发送到 syslog，默认为no
+- syslog-ident 配置 Redis 在 syslog 中的标识符，有助于区分来自不同服务的日志信息，默认为redis
+- syslog-facility 指定 syslog 设施，syslog 设施用于将日志信息分类到不同的日志文件或日志流中。常见的设施包括 local0 到 local7，默认local0
 > 要查看 Redis 发送到 syslog 的日志，可使用 journalctl 或直接查看 syslog 日志文件
 > 如：cat /var/log/syslog 或  cat /var/log/messages
 
@@ -594,9 +592,9 @@ set-proc-title 和 proc-title-template 配置 Redis 进程 title 格式
 # save 3600 1 300 100 60 10000
 ```
 save 配置 Redis RDB 持久化策略，默认 save 3600 1 300 100 60 10000
-> 在接下来的3600秒中，如果至少有1个键被修改，则在3600秒后保存RDB
-> 在接下来的300秒中，如果至少有10个键被修改，则在300秒后保存RDB
-> 在接下来的60秒中，如果至少有10000个键被修改，则在60秒后保存RDB
+> - 在接下来的3600秒中，如果至少有1个key被修改，则在3600秒后保存RDB
+> - 在接下来的300秒中，如果至少有10个key被修改，则在300秒后保存RDB
+> - 在接下来的60秒中，如果至少有10000个key被修改，则在60秒后保存RDB
 
 #### stop-writes-on-bgsave-error
 ```bash
@@ -658,7 +656,7 @@ rdbchecksum 配置用于控制在保存和加载 RDB 文件时是否启用校验
 #
 # sanitize-dump-payload no
 ```
-sanitize-dump-payload 配置项用于控制在加载 RDB 文件时是否对数据进行检查和清理，以防止潜在的恶意数据或数据损坏导致的崩溃和安全问题，默认no。
+sanitize-dump-payload 配置项用于控制在加载 RDB 文件时是否对数据进行检查和清理，以防止潜在的恶意数据或数据损坏导致的崩溃和安全问题，默认no
 #### dbfilename
 ```bash
 # The filename where to dump the DB
@@ -1309,8 +1307,9 @@ tracking-table-max-keys 配置客户端缓存无效表的最大键数，默认10
 # the Redis web site at https://redis.io/topics/acl
 ```
 ACL具体用法，内容较多，参考链接如下：
-[https://redis.io/docs/management/security/acl/](https://redis.io/docs/management/security/acl/)
-[https://www.cnblogs.com/weihanli/p/redis-acl-intro.html](https://www.cnblogs.com/weihanli/p/redis-acl-intro.html)
+
+- [https://redis.io/docs/management/security/acl/](https://redis.io/docs/management/security/acl/)
+- [https://www.cnblogs.com/weihanli/p/redis-acl-intro.html](https://www.cnblogs.com/weihanli/p/redis-acl-intro.html)
 #### acllog-max-len
 ```bash
 # ACL LOG
@@ -1636,12 +1635,11 @@ lazyfree-lazy-expire no
 lazyfree-lazy-server-del no
 replica-lazy-flush no
 ```
-lazyfree-lazy-eviction 配置是否在驱逐key时使用惰性删除，默认no。当启用该选项时，驱逐操作将由后台线程负责，而不是在主线程中立即完成
-lazyfree-lazy-expire 配置是否在key过期时使用惰性删除，默认no。当启用该选项时，过期key的删除操作将由后台线程处理，而不是在主线程中立即完成
-lazyfree-lazy-server-del 配置在命令副作用导致删除时是否使用惰性删除，默认no。当启用该选项时，删除操作将由后台线程处理，而不是在主线程中立即完成
-> 如SET命令会删除key的旧内容，并新内容替换，如果是一个big key，则可能会阻塞
 
-replica-lazy-flush 配置从节点在进行全量同步操作时是否使用惰性删除，默认no。当启用该选项时，从节点在接收到全量同步命令时，将异步删除现有数据，而不是在主线程中立即完成
+- lazyfree-lazy-eviction 配置是否在驱逐key时使用惰性删除，默认no。当启用该选项时，驱逐操作将由后台线程负责，而不是在主线程中立即完成
+- lazyfree-lazy-expire 配置是否在key过期时使用惰性删除，默认no。当启用该选项时，过期key的删除操作将由后台线程处理，而不是在主线程中立即完成
+- lazyfree-lazy-server-del 配置在命令副作用导致删除时是否使用惰性删除，默认no。当启用该选项时，删除操作将由后台线程处理，而不是在主线程中立即完，如SET命令会删除key的旧内容，并新内容替换，如果是一个big key，则可能会阻塞
+- replica-lazy-flush 配置从节点在进行全量同步操作时是否使用惰性删除，默认no。当启用该选项时，从节点在接收到全量同步命令时，将异步删除现有数据，而不是在主线程中立即完成
 #### lazyfree-lazy-user-del
 ```bash
 # It is also possible, for the case when to replace the user code DEL calls
@@ -1797,7 +1795,7 @@ disable-thp 配置是否禁用透明大页（Transparent Huge Pages，THP），�
 appendonly no
 ```
 appendonly 配置是否开启AOF功能，默认 no
-> AOF 会记录 Redis 接收到的每个写指令，以便重启时再次加载。当RDB和AOF持都开启时，Redis 启动时优先使用AOF加载数据，因为AOF更能保证数据不丢失，但是加载速度更慢。
+> AOF 会记录 Redis 接收到的每个写指令，以便重启时再次加载。当RDB和AOF持都开启时，Redis 启动时优先使用AOF加载数据，因为AOF更能保证数据不丢失，但是加载速度更慢
 
 #### appendfilename
 ```bash
@@ -1877,9 +1875,9 @@ appendfsync everysec
 ```
 appendfsync 配置 AOF 缓冲区从内存同步到磁盘的频率，即 AOF 刷盘策略，默认 everysec
 > 刷盘策略有三种：
-> always: 每次有写操作时立即同步到磁盘。这种方式最安全，但性能最差
-> everysec：每秒同步一次，可能会丢失最后一秒的数据，但性能较好
-> no: 完全依赖操作系统的同步机制，性能最佳，但在系统崩溃时可能会丢失较多数据
+> - always: 每次有写操作时立即同步到磁盘。这种方式最安全，但性能最差
+> - everysec：每秒同步一次，可能会丢失最后一秒的数据，但性能较好
+> - no: 完全依赖操作系统的同步机制，性能最佳，但在系统崩溃时可能会丢失较多数据
 
 #### no-appendfsync-on-rewrite
 ```bash
@@ -1905,8 +1903,8 @@ appendfsync 配置 AOF 缓冲区从内存同步到磁盘的频率，即 AOF 刷�
 no-appendfsync-on-rewrite no
 ```
 no-appendfsync-on-rewrite 配置在后台保存进程（如 BGSAVE 或 BGREWRITEAOF）进行大量 I/O 操作时，是否禁止主进程中调用 fsync()，默认no
-> yes: 在后台保存进程正在执行时，防止主进程调用 fsync()，这意味着此时 AOF 持久化相当于将 appendfsync 设置为** **no。在极端情况下(默认 Linux 设置下），可能会丢失最多 30 秒的AOF日志
-> no: 在后台保存进程正在执行时，主进程仍然会调用 fsync()，这是为了减少因 fsync() 调用导致的潜在的长时间阻塞
+> - yes: 在后台保存进程正在执行时，防止主进程调用 fsync()，这意味着此时 AOF 持久化相当于将 appendfsync 设置为** **no。在极端情况下，可能会丢失最多 30 秒的AOF日志
+> - no: 在后台保存进程正在执行时，主进程仍然会调用 fsync()，这是为了减少因 fsync() 调用导致的潜在的长时间阻塞
 
 #### auto-aof-rewrite-percentage
 #### auto-aof-rewrite-min-size
@@ -1931,8 +1929,9 @@ no-appendfsync-on-rewrite 配置在后台保存进程（如 BGSAVE 或 BGREWRITE
 auto-aof-rewrite-percentage 100
 auto-aof-rewrite-min-size 64mb
 ```
-auto-aof-rewrite-percentage 配置触发 AOF 重写的百分比(相较于上次 AOF 文件大小)，默认100
-auto-aof-rewrite-min-size 配置触发 AOF 重写的最小 AOF 文件大小，默认64MB
+
+- auto-aof-rewrite-percentage 配置触发 AOF 重写的百分比(相较于上次 AOF 文件大小)，默认100
+- auto-aof-rewrite-min-size 配置触发 AOF 重写的最小 AOF 文件大小，默认64MB
 > 当 AOF 文件大小增长到 auto-aof-rewrite-percentage 指定的百分比(相对于上次AOF文件大小)，且达到 auto-aof-rewrite-min-size  指定的最小文件大小时，会调用 BGREWRITEAOF 指令重写AOF文件
 
 #### aof-load-truncated
@@ -2087,8 +2086,7 @@ cluster-config-file 配置集群的配置文件名，默认 nodes-6379.conf
 # cluster-node-timeout 15000
 ```
 cluster-node-timeout 配置集群中节点的超时时间，默认15秒
-> 如果在 cluster-node-timeout 时间内一直通信失败，则会被判定为主观下线，超过半数主节点认为该节点主观下线，则判断该节点客观下线，并触发故障转移流程
-> cluster-node-timeout 配置项跟集群内部节点通信频率和故障转移息息相关
+> 如果在 cluster-node-timeout 时间内一直通信失败，则会被判定为主观下线，超过半数主节点认为该节点主观下线，则判断该节点客观下线，并触发故障转移流程。cluster-node-timeout 配置项跟集群内部节点通信频率和故障转移息息相关
 
 #### cluster-port
 ```bash
@@ -2173,8 +2171,7 @@ cluster-replica-validity-factor 控制 Redis 集群中从节点的有效性判�
 # cluster-migration-barrier 1
 ```
 cluster-migration-barrier 用于控制从节点在迁移到孤立主节点时的行为，默认1
-> 当一个主节点没有从节点时，为了提高集群的容错能力，其他主节点所拥有的从节点可以迁移到这个孤立的主节点。但是，迁移只有在源主节点还有大于指定数量的从节点时才会发生。例如，默认值为1，即源主节点至少有2个从节点时才会发生迁移
-> 参考链接：[https://blog.csdn.net/u011535541/article/details/78625330](https://blog.csdn.net/u011535541/article/details/78625330)
+> 当一个主节点没有从节点时，为了提高集群的容错能力，其他主节点所拥有的从节点可以迁移到这个孤立的主节点。但是，迁移只有在源主节点还有大于指定数量的从节点时才会发生。例如，默认值为1，即源主节点至少有2个从节点时才会发生迁移，参考链接：[https://blog.csdn.net/u011535541/article/details/78625330](https://blog.csdn.net/u011535541/article/details/78625330)
 
 #### cluster-allow-replica-migration
 ```bash
@@ -2203,8 +2200,8 @@ cluster-allow-replica-migration 是否允许从节点迁移到孤儿主节点，
 # cluster-require-full-coverage yes
 ```
 cluster-require-full-coverage 配置是否要求哈希槽全覆盖，默认 yes
-> yes：如果检测哈希槽未全覆盖，当前集群节点则会不可用
-> no：即使哈希槽未全覆盖，当前集群节点也会继续提供服务
+> - yes：如果检测哈希槽未全覆盖，当前集群节点则会不可用
+> - no：即使哈希槽未全覆盖，当前集群节点也会继续提供服务
 
 #### cluster-replica-no-failover
 ```bash
@@ -2346,10 +2343,11 @@ cluster-preferred-endpoint-type 配置集群返回给客户端的首选端点类
 # cluster-announce-port 0
 # cluster-announce-bus-port 6380
 ```
-cluster-announce-ip：配置节点公布的 IP 地址
-cluster-announce-port：配置节点公布的端口（无 TLS 连接）
-cluster-announce-tls-port：配置节点公布的端口（有 TLS 连接）
-cluster-announce-bus-port：配置节点公布的集群总线端口
+
+- cluster-announce-ip：配置节点公布的 IP 地址
+- cluster-announce-port：配置节点公布的端口（无 TLS 连接）
+- cluster-announce-tls-port：配置节点公布的端口（有 TLS 连接）
+- cluster-announce-bus-port：配置节点公布的集群总线端口
 > 在 NAT 地址转换或端口转发的情况下（如 Docker 容器），访问Redis 节点的地址可能会失败，为了使 集群正常工作，需要使用静态配置
 
 ### SLOW LOG
@@ -2420,8 +2418,9 @@ latency-monitor-threshold 配置延时监控阈值，系统只会记录执行时
 # are the p50, p99, and p999.
 # latency-tracking-info-percentiles 50 99 99.9
 ```
-latency-tracking 配置是否开启扩展延迟监控，默认 yes
-latency-tracking-info-percentiles 配置导出的延迟百分比，默认 50 99 99.9
+
+- latency-tracking 配置是否开启扩展延迟监控，默认 yes
+- latency-tracking-info-percentiles 配置导出的延迟百分比，默认 50 99 99.9
 > 启用该功能后，Redis 会跟踪每个命令的延迟，并通过 INFO latencystats 命令导出延迟百分比分布，通过 LATENCY 命令导出累计延迟分布直方图
 
 ### EVENT NOTIFICATION
@@ -2483,8 +2482,7 @@ notify-keyspace-events 用于配置 Redis 服务器发送的键空间通知（Ke
 ### ADVANCED CONFIG
 > 本章节需要对Redis数据结构的编码有一定了解
 
-> 从 Redis 7.0 开始，ziplist 被 listpack 取代
-> 例如：hash-max-ziplist-entries、list-max-ziplist-size 等配置项被 hash-max-listpack-entries、list-max-listpack-size 所取代
+> 从 Redis 7.0 开始，ziplist 被 listpack 取代，例如：hash-max-ziplist-entries、list-max-ziplist-size 等配置项被 hash-max-listpack-entries、list-max-listpack-size 所取代
 
 #### hash-max-listpack-entries
 #### hash-max-listpack-value
@@ -2495,8 +2493,9 @@ notify-keyspace-events 用于配置 Redis 服务器发送的键空间通知（Ke
 hash-max-listpack-entries 512
 hash-max-listpack-value 64
 ```
-hash-max-listpack-entries 配置 hash 在使用 listpack 编码时，允许的最大元素数量，默认 512
-hash-max-listpack-value 配置 hash 使用 listpack 编码时，允许的最大元素长度，默认 64 字节
+
+- hash-max-listpack-entries 配置 hash 在使用 listpack 编码时，允许的最大元素数量，默认 512
+- hash-max-listpack-value 配置 hash 使用 listpack 编码时，允许的最大元素长度，默认 64 字节
 > 上述默认值表示当 hash 中元素不超过512个，单个元素不超过64个字节时，使用 listpack 编码，否则使用 hashtable 编码
 
 #### list-max-listpack-size
@@ -2517,13 +2516,14 @@ hash-max-listpack-value 配置 hash 使用 listpack 编码时，允许的最大�
 list-max-listpack-size -2
 ```
 list-max-listpack-size 配置 list 中每个内部 listpack 节点的最大大小或最大元素数目，默认 -2
-> -5：每个quicklist节点上的 listpack 大小不能超过64 Kb
-> -4：每个quicklist节点上的 listpack 大小不能超过32 Kb
-> -3：每个quicklist节点上的 listpack 大小不能超过16 Kb
-> -2：每个quicklist节点上的 listpack 大小不能超过8 Kb
-> -1：每个quicklist节点上的 listpack 大小不能超过4 Kb
-> 取正值表示每个内部 listpack 节点的最大元素数目
-> 通常为 -2（8 KB 大小）或 -1（4 KB 大小）表现最好
+> - -5：每个quicklist节点上的 listpack 大小不能超过64 Kb
+> - -4：每个quicklist节点上的 listpack 大小不能超过32 Kb
+> - -3：每个quicklist节点上的 listpack 大小不能超过16 Kb
+> - -2：每个quicklist节点上的 listpack 大小不能超过8 Kb
+> - -1：每个quicklist节点上的 listpack 大小不能超过4 Kb
+> - 取正值表示每个内部 listpack 节点的最大元素数目
+> 
+通常为 -2（8 KB 大小）或 -1（4 KB 大小）表现最好
 
 #### list-compress-depth
 ```bash
@@ -2544,8 +2544,8 @@ list-max-listpack-size 配置 list 中每个内部 listpack 节点的最大大�
 list-compress-depth 0
 ```
 list-compress-depth 配置 list 在内部使用 ziplist 或 listpack 时，从 list 两端开始不进行压缩的节点数量，默认 0
-> 0：表示不压缩。
-> n：表示 list 两端各有 n 个节点不压缩，中间的节点压缩
+> - 0：表示不压缩。
+> - n：表示 list 两端各有 n 个节点不压缩，中间的节点压缩
 
 #### set-max-intset-entries
 ```bash
@@ -2568,8 +2568,9 @@ set-max-intset-entries 配置 set 使用 intset 编码时，允许的最大整�
 zset-max-listpack-entries 128
 zset-max-listpack-value 64
 ```
-zset-max-listpack-entries 配置 zset 在使用 listpack 编码时，允许的最大元素数量，默认 128
- zset-max-listpack-value 配置 zset 在使用 listpack 编码时，允许的最大元素长度，默认 64 字节
+
+- zset-max-listpack-entries 配置 zset 在使用 listpack 编码时，允许的最大元素数量，默认 128
+-  zset-max-listpack-value 配置 zset 在使用 listpack 编码时，允许的最大元素长度，默认 64 字节
 #### hll-sparse-max-bytes
 ```bash
 # HyperLogLog sparse representation bytes limit. The limit includes the
@@ -2603,8 +2604,9 @@ hll-sparse-max-bytes 配置 HyperLogLog 在稀疏模式（sparse mode）下的�
 stream-node-max-bytes 4096
 stream-node-max-entries 100
 ```
-stream-node-max-bytes 配置 stream 中每个节点允许的最大字节数，默认 4096 个字节
-stream-node-max-entries 配置 stream 中每个节点允许的最大元素数量，默认 100
+
+- stream-node-max-bytes 配置 stream 中每个节点允许的最大字节数，默认 4096 个字节
+- stream-node-max-entries 配置 stream 中每个节点允许的最大元素数量，默认 100
 #### activerehashing
 ```bash
 # Active rehashing uses 1 millisecond every 100 milliseconds of CPU time in
@@ -2675,9 +2677,9 @@ client-output-buffer-limit replica 256mb 64mb 60
 client-output-buffer-limit pubsub 32mb 8mb 60
 ```
 client-output-buffer-limit 限制客户端的输出缓冲区大小
-> client-output-buffer-limit normal 0 0 0：限制普通客户端的输出缓冲区大小，默认 0 0 0，表示没有限制
-> client-output-buffer-limit replica 256mb 64mb 60：限制从节点客户端的输出缓冲区大小，默认 256mb 64mb 60，表示超过 256MB则断开连接，或 60 秒内持续超过 64MB，则断开连接
-> client-output-buffer-limit pubsub 32mb 8mb 60：限制发布订阅客户端的输出缓冲区大小，默认 32mb 8mb 60，表示超过 32MB则断开连接，或 60 秒内持续超过 8MB，则断开连接
+> - client-output-buffer-limit normal 0 0 0：限制普通客户端的输出缓冲区大小，默认 0 0 0，表示没有限制
+> - client-output-buffer-limit replica 256mb 64mb 60：限制从节点客户端的输出缓冲区大小，默认 256mb 64mb 60，表示超过 256MB则断开连接，或 60 秒内持续超过 64MB，则断开连接
+> - client-output-buffer-limit pubsub 32mb 8mb 60：限制发布订阅客户端的输出缓冲区大小，默认 32mb 8mb 60，表示超过 32MB则断开连接，或 60 秒内持续超过 8MB，则断开连接
 
 #### client-query-buffer-limit
 ```bash
@@ -2835,8 +2837,9 @@ rdb-save-incremental-fsync 配置 Redis 子进程在保存 RDB 快照时的行�
 # lfu-log-factor 10
 # lfu-decay-time 1
 ```
-lfu-log-factor 配置 LFU 计数器的增长速度，默认10，值越大，计数器增长越慢
-lfu-decay-time 配置 LFU 计数器的衰减速度，默认1分钟，值越大，衰减速度越慢
+
+- lfu-log-factor 配置 LFU 计数器的增长速度，默认10，值越大，计数器增长越慢
+- lfu-decay-time 配置 LFU 计数器的衰减速度，默认1分钟，值越大，衰减速度越慢
 ### ACTIVE DEFRAGMENTATION
 #### activedefrag
 ```bash
@@ -2957,10 +2960,11 @@ jemalloc-bg-thread 配置是否启用 jemalloc 后台线程，默认 yes，jemal
 # Set bgsave child process to cpu affinity 1,10,11
 # bgsave_cpulist 1,10-11
 ```
-server_cpulist 配置将Redis服务器、IO线程固定到指定CPU，无默认值
-bio_cpulist 配置将BIO线程固定到指定CPU，无默认值
-aof_rewrite_cpulist 配置将AOF重写子进程固定到指定CPU，无默认值
-bgsave_cpulist 配置将bgsave子进程固定到指定CPU，无默认值
+
+- server_cpulist 配置将Redis服务器、IO线程固定到指定CPU，无默认值
+- bio_cpulist 配置将BIO线程固定到指定CPU，无默认值
+- aof_rewrite_cpulist 配置将AOF重写子进程固定到指定CPU，无默认值
+- bgsave_cpulist 配置将bgsave子进程固定到指定CPU，无默认值
 > 要熟悉 CPU 架构，做好充分的测试，否则可能适得其反，导致 Redis 性能下降
 
 #### ignore-warnings
